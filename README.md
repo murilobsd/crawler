@@ -6,6 +6,9 @@ Isso é mais um estudo da linguagem rust, resolvi tentar montar um webcrawler.
 
 ## TODO
 
-- [] Downloader
-- [] Pipeline
-- [] Processor
+- [ ] Downloader
+- [ ] Pipeline
+- [ ] Processor
+- [ ] Proxy
+- [ ] unblock fingerprint
+- [ ] 3rd nocaptchas services
