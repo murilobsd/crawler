@@ -10,3 +10,4 @@ repository = "https://github.com/murilobsd/rakun.git"
 version = "0.1.0"
 
 [dependencies]
+queue = "0.3"
