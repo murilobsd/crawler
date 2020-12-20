@@ -1,10 +1,10 @@
 pub struct Request<'a> {
-    url: &'a str
+    url: &'a str,
 }
 
 impl<'a> Request<'a> {
     pub fn new(url: &'a str) -> Request<'a> {
-        Self{url}
+        Self { url }
     }
 }
 
@@ -14,10 +14,9 @@ pub struct Site<'a> {
 
 impl<'a> Site<'a> {
     pub fn new(user_agent: &'a str) -> Site<'a> {
-        Self{user_agent}
+        Self { user_agent }
     }
 }
-
 
 fn main() {
     let url = "http://httpbin.org/ip";
