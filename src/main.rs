@@ -19,8 +19,12 @@ impl<'a> Site<'a> {
 }
 
 fn main() {
+    let user_agent = "crawler/0.0.1";
     let url = "http://httpbin.org/ip";
-    let _ = Request::new(url);
+    let req = Request::new(url);
+    let site = Site::new(user_agent);
+    println!("Request url: {}", req.url);
+    println!("Site user agent: {}", site.user_agent);
 }
 
 #[cfg(test)]
