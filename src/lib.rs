@@ -1,31 +1,9 @@
-pub mod crawler {
-    use std::collections::HashSet;
+use hyper;
 
-    use crate::spider::Spider;
-
-    /// Crawler struct
-    pub struct Crawler {
-        crawling: bool,
-    }
-
-    /// Run crawlers
-    pub struct CrawlerRunner {
-        pub crawlers: HashSet<Crawler>,
-        pub active: HashSet<Crawler>,
-    }
-
-    // TODO: carrager o spider_loader aqui dentro
-    impl CrawlerRunner {
-        pub fn new() -> Self {
-            Self {
-                crawlers: HashSet::new(),
-                active: HashSet::new(),
-            }
-        }
-
-        pub fn create_crawler(s: Spider) {
-            println!("init spider {}", s.name);
-        }
+pub mod http {
+    pub struct Request<'a> {
+        url: &'a str,
+        method: hyper::method::Method,
     }
 }
 
@@ -46,6 +24,12 @@ pub mod spider {
 
         pub fn push_url(&mut self, s: &'a str) {
             self.start_urls.push(s)
+        }
+
+        pub fn start_requests(&self) {
+            for url in &self.start_urls {
+                println!("Request {}", url);
+            }
         }
     }
 
@@ -70,3 +54,50 @@ pub mod spider {
         }
     }
 }
+
+// pub mod crawler {
+//     use std::collections::HashSet;
+
+//     use crate::spider::Spider;
+
+//     /// Crawler struct
+//     pub struct Crawler {
+//         crawling: bool,
+//     }
+
+//     impl Crawler {
+//         pub fn new() -> Self {
+//             Self {crawling: false}
+//         }
+
+//         pub fn crawl() {}
+
+//         fn create_engine(&self) {
+//             println!("Create Execution Engine");
+//         }
+
+//         fn create_spider(&self) {
+//             println!("Create Spider");
+//         }
+//     }
+
+//     /// Run crawlers
+//     pub struct CrawlerRunner {
+//         pub crawlers: HashSet<Crawler>,
+//         pub active: HashSet<Crawler>,
+//     }
+
+//     // TODO: carrager o spider_loader aqui dentro
+//     impl CrawlerRunner {
+//         pub fn new() -> Self {
+//             Self {
+//                 crawlers: HashSet::new(),
+//                 active: HashSet::new(),
+//             }
+//         }
+
+//         pub fn create_crawler(s: Spider) {
+//             println!("init spider {}", s.name);
+//         }
+//     }
+// }
