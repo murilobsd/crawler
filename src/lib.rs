@@ -1,16 +1,46 @@
-//! Spider
+pub mod crawler {
+    use std::collections::HashSet;
+
+    use crate::spider::Spider;
+
+    /// Crawler struct
+    pub struct Crawler {
+        crawling: bool,
+    }
+
+    /// Run crawlers
+    pub struct CrawlerRunner {
+        pub crawlers: HashSet<Crawler>,
+        pub active: HashSet<Crawler>,
+    }
+
+    // TODO: carrager o spider_loader aqui dentro
+    impl CrawlerRunner {
+        pub fn new() -> Self {
+            Self {
+                crawlers: HashSet::new(),
+                active: HashSet::new(),
+            }
+        }
+
+        pub fn create_crawler(s: Spider) {
+            println!("init spider {}", s.name);
+        }
+    }
+}
+
 pub mod spider {
     /// This module is responsible for parsing the response.
     pub struct Spider<'a> {
         pub name: &'a str,
-        pub start_urls: Vec<&'a str>
+        pub start_urls: Vec<&'a str>,
     }
 
     impl<'a> Spider<'a> {
         pub fn new(name: &'a str) -> Spider<'a> {
             Spider {
                 name,
-                start_urls: Vec::new()
+                start_urls: Vec::new(),
             }
         }
 
