@@ -16,7 +16,7 @@
 |Address|object||
 |Date|date||
 |time|time||
-|plate number||
+|plate number|alfanum|
 |brand|alfanum||
 |model|alfa||
 |information driver|object||
