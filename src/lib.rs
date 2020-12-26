@@ -11,3 +11,14 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+extern crate http;
+
+pub struct Request {
+    pub url: http::uri::Uri,
+}
+
+impl Request {
+    pub fn new(url: http::uri::Uri) -> Self {
+        Self { url }
+    }
+}
