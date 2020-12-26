@@ -13,12 +13,38 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 extern crate http;
 
+use http::Uri;
+
 pub struct Request {
-    pub url: http::uri::Uri,
+    pub uri: Uri,
 }
 
 impl Request {
-    pub fn new(url: http::uri::Uri) -> Self {
-        Self { url }
+    pub fn new(url: &'static str) -> Self {
+        let uri = url.parse::<Uri>().unwrap();
+        Self { uri }
+    }
+
+    pub fn url(&self) -> String {
+        self.uri.to_string()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn request_new_test() {
+        let req = Request::new("http://httpbin.org/ip");
+        assert_eq!(req.uri.scheme_str(), Some("http"));
+        assert_eq!(req.uri.host(), Some("httpbin.org"));
+        assert_eq!(req.uri.path(), "/ip");
+    }
+
+    #[test]
+    fn request_get_url_test() {
+        let req = Request::new("http://httpbin.org/ip");
+        assert_eq!(req.url(), "http://httpbin.org/ip");
     }
 }
