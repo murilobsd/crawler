@@ -15,9 +15,23 @@
 pub use hyper::Method;
 pub use hyper::Body;
 pub use hyper::Request as HyperRequest;
-pub use hyper::header as HyperHeader;
+pub use hyper::header::HeaderMap;
 
-pub struct Url;
+use url::{self};
+
+pub struct Url {
+    /// base_url
+    base_url: url::Url,
+}
+
+impl Url {
+    pub fn parse(data: &str) -> Result<Url, String> {
+        match url::Url::parse(data) {
+            Ok(u) => Ok(Url{base_url: u}),
+            Err(e) => Err(format!("{}", e)),
+        }
+    }
+}
 
 /// The `Request` represent http request rakun.
 pub struct Request {
@@ -25,13 +39,24 @@ pub struct Request {
     pub body: Option<Body>,
 
     /// The request headers
-    pub headers: HyperHeader::HeaderMap,
+    pub headers: HeaderMap,
 
     /// The request method
     pub method: Method,
 
     /// The requested url.
     pub url: Url,
+}
+
+impl Request {
+    pub fn new() -> Request {
+        Request {
+            body: Some(Body::empty()),
+            headers: HeaderMap::new(),
+            method: Method::GET,
+            url: Url::parse("http://httpbin.org/ip").unwrap(),
+        }
+    }
 }
 
 #[cfg(test)]

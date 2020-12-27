@@ -11,40 +11,14 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-extern crate http;
+extern crate pretty_env_logger;
+#[macro_use]
+extern crate log;
+extern crate hyper;
+extern crate url as url_ext;
 
-use http::Uri;
-
-pub struct Request {
-    pub uri: Uri,
+pub mod url {
+    pub use url_ext::*;
 }
 
-impl Request {
-    pub fn new(url: &'static str) -> Self {
-        let uri = url.parse::<Uri>().unwrap();
-        Self { uri }
-    }
-
-    pub fn url(&self) -> String {
-        self.uri.to_string()
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn request_new_test() {
-        let req = Request::new("http://httpbin.org/ip");
-        assert_eq!(req.uri.scheme_str(), Some("http"));
-        assert_eq!(req.uri.host(), Some("httpbin.org"));
-        assert_eq!(req.uri.path(), "/ip");
-    }
-
-    #[test]
-    fn request_get_url_test() {
-        let req = Request::new("http://httpbin.org/ip");
-        assert_eq!(req.url(), "http://httpbin.org/ip");
-    }
-}
+pub mod request;
