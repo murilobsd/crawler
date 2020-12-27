@@ -12,13 +12,19 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-pub use hyper::Method;
-pub use hyper::Body;
-pub use hyper::Request as HyperRequest;
 pub use hyper::header::HeaderMap;
+pub use hyper::Body;
+pub use hyper::Method;
+pub use hyper::Request as HyperRequest;
 
+use hyper;
+use hyper_tls::HttpsConnector;
 use url::{self};
+use hyper::Client;
+use hyper::rt::{self, Future, Stream};
 
+
+#[derive(PartialEq, Eq, Clone, Debug)]
 pub struct Url {
     /// base_url
     base_url: url::Url,
@@ -27,9 +33,21 @@ pub struct Url {
 impl Url {
     pub fn parse(data: &str) -> Result<Url, String> {
         match url::Url::parse(data) {
-            Ok(u) => Ok(Url{base_url: u}),
+            Ok(u) => Ok(Url { base_url: u }),
             Err(e) => Err(format!("{}", e)),
         }
+    }
+}
+
+impl Into<url::Url> for Url {
+    fn into(self) -> url::Url {
+        self.base_url
+    }
+}
+
+impl AsRef<url::Url> for Url {
+    fn as_ref(&self) -> &url::Url {
+        &self.base_url
     }
 }
 
@@ -46,25 +64,42 @@ pub struct Request {
 
     /// The requested url.
     pub url: Url,
+
+    _client: hyper::Client<hyper_tls::HttpsConnector<hyper::client::HttpConnector>>,
 }
 
 impl Request {
     pub fn new() -> Request {
+        let https = HttpsConnector::new();
+
         Request {
             body: Some(Body::empty()),
+            _client: hyper::Client::builder().build(https),
             headers: HeaderMap::new(),
             method: Method::GET,
             url: Url::parse("http://httpbin.org/ip").unwrap(),
         }
     }
+
+    pub fn execute(&mut self) -> Result<hyper::client::ResponseFuture, Error> {
+        let mut builder = hyper::Request::builder()
+            builder.uri()
+            builder.method(self.method);
+
+        let req = builder.body("".into()) {
+            Ok(request) => request,
+            Err(error) => return Err(Error::new(, error)),
+        };
+
+        Ok(self._client.request(req))
+    }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
 
     #[test]
     fn assert_true() {
-        assert_eq!(2, 1+1);
+        assert_eq!(2, 1 + 1);
     }
 }
