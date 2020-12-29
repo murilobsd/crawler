@@ -11,15 +11,32 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-pub struct RakunClient;
+use reqwest;
 
-trait Client {
-    fn new() -> Self;
+pub struct RakunClient {
+    http: reqwest::Client,
 }
 
-impl Client for RakunClient {
-    fn new() -> Self {
-        Self
+impl RakunClient {
+    pub fn new() -> Self {
+        let client = reqwest::Client::new();
+        Self { http: client }
+    }
+
+    pub fn execute(&self) -> Result<(), Box<dyn std::error::Error>> {
+        let resp = reqwest::blocking::get("https://httpbin.org/ip")?;
+
+        if resp.status().is_success() {
+            println!("success!");
+        } else if resp.status().is_server_error() {
+            println!("server error!");
+        } else {
+            println!("Something else happened. Status: {:?}", resp.status());
+        }
+
+        println!("{:#?}", resp);
+
+        Ok(())
     }
 }
 
