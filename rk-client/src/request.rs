@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Murilo Ijanc' <mbsd@m0x.ru>
+// Copyright (c) 2020 Murilo Ijanc' <murilo.ijanc@kovi.com.br>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -11,6 +11,7 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
 use std::fmt;
 
 use super::client;
@@ -18,24 +19,34 @@ use super::RakunMethod;
 use url;
 
 pub struct RakunRequest {
-    method: RakunMethod,
-    uri: url::Url,
+    pub in_method: RakunMethod,
+    pub uri: url::Url,
 }
 
 impl RakunRequest {
     pub fn new<S: AsRef<str>>(
-        method: RakunMethod,
+        in_method: RakunMethod,
         uri: S,
     ) -> Result<RakunRequest, url::ParseError> {
         let u = url::Url::parse(uri.as_ref()).unwrap();
-        Ok(Self { method, uri: u })
+        Ok(Self { in_method, uri: u })
+    }
+
+    #[inline]
+    pub fn url(&self) -> url::Url {
+        self.uri.clone()
+    }
+
+    #[inline]
+    pub fn method(&self) -> RakunMethod {
+        self.in_method.clone()
     }
 
     pub(crate) fn into_client(
         self,
         client: &client::RakunClient,
     ) -> Result<reqwest::blocking::RequestBuilder, ()> {
-        let req_builder = client.http.request(self.method, self.uri);
+        let req_builder = client.http.request(self.in_method, self.uri);
 
         Ok(req_builder)
     }
@@ -46,7 +57,7 @@ impl fmt::Display for RakunRequest {
         write!(
             f,
             "<Request: {} {}>",
-            self.method.as_ref(),
+            self.in_method.as_ref(),
             self.uri.as_ref()
         )
     }
@@ -61,5 +72,13 @@ mod tests {
         let url = "http://httpbin.org/";
         let req = RakunRequest::new(RakunMethod::GET, url).unwrap();
         assert_eq!("<Request: GET http://httpbin.org/>", format!("{}", req));
+    }
+
+    #[test]
+    fn request_get() {
+        let url = "http://httpbin.org/";
+        let req = RakunRequest::new(RakunMethod::GET, url).unwrap();
+        assert_eq!(url, req.url().as_str());
+        assert_eq!("GET", req.method().as_str());
     }
 }

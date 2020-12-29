@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Murilo Ijanc' <mbsd@m0x.ru>
+// Copyright (c) 2020 Murilo Ijanc' <murilo.ijanc@kovi.com.br>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
