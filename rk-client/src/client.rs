@@ -13,30 +13,25 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 use reqwest;
 
+use super::request;
+
 pub struct RakunClient {
-    http: reqwest::Client,
+    pub http: reqwest::blocking::Client,
 }
 
 impl RakunClient {
     pub fn new() -> Self {
-        let client = reqwest::Client::new();
+        let client = reqwest::blocking::Client::new();
         Self { http: client }
     }
 
-    pub fn execute(&self) -> Result<(), Box<dyn std::error::Error>> {
-        let resp = reqwest::blocking::get("https://httpbin.org/ip")?;
+    pub fn execute(
+        &self,
+        req: request::RakunRequest,
+    ) -> Result<reqwest::blocking::Response, reqwest::Error> {
+        let resp = req.into_client(self).unwrap();
 
-        if resp.status().is_success() {
-            println!("success!");
-        } else if resp.status().is_server_error() {
-            println!("server error!");
-        } else {
-            println!("Something else happened. Status: {:?}", resp.status());
-        }
-
-        println!("{:#?}", resp);
-
-        Ok(())
+        Ok(resp.send()?)
     }
 }
 

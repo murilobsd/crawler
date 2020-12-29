@@ -14,7 +14,7 @@
 extern crate reqwest;
 extern crate url;
 
-use reqwest::Method as RakunMethod;
+pub use reqwest::Method as RakunMethod;
 
 pub mod client;
 pub mod request;

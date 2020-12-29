@@ -12,10 +12,23 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 use rk_client::client::RakunClient;
+use rk_client::request::RakunRequest;
+use rk_client::RakunMethod;
 
 fn main() {
     let client = RakunClient::new();
+    let url = "http://httpbin.org/get";
+    let req = RakunRequest::new(RakunMethod::GET, url).unwrap();
 
-    #[warn(unused_must_use)]
-    client.execute();
+    let resp = client.execute(req).unwrap();
+
+    if resp.status().is_success() {
+        println!("success!");
+    } else if resp.status().is_server_error() {
+        println!("server error!");
+    } else {
+        println!("Something else happened. Status: {:?}", resp.status());
+    }
+
+    println!("{:#?}", resp);
 }
