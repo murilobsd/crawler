@@ -1,19 +1,5 @@
-[package]
-authors = ["mbsd <mbsd@m0x.ru>"]
-description = "Crawler"
-documentation = "https://docs.rs//"
-edition = "2018"
-homepage = "https://github.com/murilobsd/rakun"
-license = "ISC"
-name = "rakun"
-repository = "https://github.com/murilobsd/rakun.git"
-version = "0.1.0"
+[workspace]
 
-[dependencies]
-hyper = { version = "0.13.9" }
-hyper-tls = "0.4.3"
-log = "0.4.11"
-pretty_env_logger = "0.4.0"
-tokio = { version = "1.0.1", features = ["full"] }
-tokio-test = "0.4.0"
-url = "2.2.0"
+members = [
+    "rk-client",
+]
