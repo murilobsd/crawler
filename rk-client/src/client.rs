@@ -11,9 +11,14 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-use reqwest;
 
 use super::request;
+
+static USER_AGENT: &str = concat!(
+	"rakun",
+	"/",
+	env!("CARGO_PKG_VERSION"),
+);
 
 pub struct RakunClient {
     pub http: reqwest::blocking::Client,
@@ -21,7 +26,12 @@ pub struct RakunClient {
 
 impl RakunClient {
     pub fn new() -> Self {
-        let client = reqwest::blocking::Client::new();
+        let client = reqwest::blocking::Client::builder()
+            .danger_accept_invalid_certs(true)
+            .no_proxy()
+			.user_agent(USER_AGENT)
+            .build()
+            .unwrap();
         Self { http: client }
     }
 
@@ -32,6 +42,12 @@ impl RakunClient {
         let resp = req.into_client(self).unwrap();
 
         Ok(resp.send()?)
+    }
+}
+
+impl Default for RakunClient {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

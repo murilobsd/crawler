@@ -15,12 +15,14 @@
 use std::fmt;
 
 use super::client;
+use super::RakunHeaders;
 use super::RakunMethod;
-use url;
+use url::Url;
 
 pub struct RakunRequest {
     pub in_method: RakunMethod,
-    pub uri: url::Url,
+    pub uri: Url,
+    pub headers: RakunHeaders,
 }
 
 impl RakunRequest {
@@ -28,8 +30,12 @@ impl RakunRequest {
         in_method: RakunMethod,
         uri: S,
     ) -> Result<RakunRequest, url::ParseError> {
-        let u = url::Url::parse(uri.as_ref()).unwrap();
-        Ok(Self { in_method, uri: u })
+        let u = Url::parse(uri.as_ref()).unwrap();
+        Ok(Self {
+            in_method,
+            uri: u,
+            headers: RakunHeaders::new(),
+        })
     }
 
     #[inline]
