@@ -86,5 +86,7 @@ mod tests {
         let req = RakunRequest::new(RakunMethod::GET, url).unwrap();
         assert_eq!(url, req.url().as_str());
         assert_eq!("GET", req.method().as_str());
+	assert!(req.headers.is_empty());
+	assert_eq!(0, req.headers.capacity());
     }
 }
