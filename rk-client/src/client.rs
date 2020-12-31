@@ -14,11 +14,7 @@
 
 use super::request;
 
-static USER_AGENT: &str = concat!(
-	"rakun",
-	"/",
-	env!("CARGO_PKG_VERSION"),
-);
+static USER_AGENT: &str = concat!("rakun", "/", env!("CARGO_PKG_VERSION"),);
 
 pub struct RakunClient {
     pub http: reqwest::blocking::Client,
@@ -29,7 +25,7 @@ impl RakunClient {
         let client = reqwest::blocking::Client::builder()
             .danger_accept_invalid_certs(true)
             .no_proxy()
-			.user_agent(USER_AGENT)
+            .user_agent(USER_AGENT)
             .build()
             .unwrap();
         Self { http: client }
