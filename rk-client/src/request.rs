@@ -31,10 +31,11 @@ impl RakunRequest {
         uri: S,
     ) -> Result<RakunRequest, url::ParseError> {
         let u = Url::parse(uri.as_ref()).unwrap();
+        let h = RakunHeaders::new();
         Ok(Self {
             in_method,
             uri: u,
-            headers: RakunHeaders::new(),
+            headers: h,
         })
     }
 
@@ -86,7 +87,7 @@ mod tests {
         let req = RakunRequest::new(RakunMethod::GET, url).unwrap();
         assert_eq!(url, req.url().as_str());
         assert_eq!("GET", req.method().as_str());
-	assert!(req.headers.is_empty());
-	assert_eq!(0, req.headers.capacity());
+        assert!(req.headers.is_empty());
+        assert_eq!(0, req.headers.capacity());
     }
 }
