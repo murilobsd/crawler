@@ -47,6 +47,13 @@ impl Default for RakunClient {
     }
 }
 
+pub fn rakun_client() -> Result<reqwest::Client, ()> {
+    let client = reqwest::Client::new()
+        .cookie_store(true)
+        .build()?
+    client
+}
+
 #[cfg(test)]
 mod tests {
     #[test]
