@@ -1,0 +1,13 @@
+# rust
+debug/
+target/
+Cargo.lock
+**/*.rs.bk
+
+# vim
+*~
+tags
+[._]*.un~
+
+# mac
+.DS_Store
