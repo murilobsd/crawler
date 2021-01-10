@@ -11,13 +11,16 @@
 # WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+import asyncio
+import re
 from typing import Union
 
 import aiohttp
-import asyncio
+
 
 class ExceptionRenavam(Exception):
     pass
+
 
 class Renavam:
     def __init__(self, renavam_number: Union[int, str]):
@@ -32,6 +35,13 @@ class Renavam:
             raise ExceptionRenavam("len renavam got: %d - 9" % renavam_sz)
 
         self.data = renavam_number
+
+    def __str__(self):
+        self.data
+
+    def __repr__(self):
+        return "Renavam({})".format(self.data)
+
 
 class Client:
     def __init__(self):
@@ -53,8 +63,10 @@ class Client:
 
 class SpiderEmbu:
     base_url = "http://sistemas.cobrasin.com.br{}"
-    url_page = base_url.format("/multas-municipe/home.action?municipio=8");
-    url_form = base_url.format("/multas-municipe/pesquisaMultaMunicipe/pesquisar.action")
+    url_page = base_url.format("/multas-municipe/home.action?municipio=8")
+    url_form = base_url.format(
+        "/multas-municipe/pesquisaMultaMunicipe/pesquisar.action"
+    )
     municipio = "8"
 
     def __init__(self, client: Client, renavam: Renavam):
@@ -65,19 +77,36 @@ class SpiderEmbu:
         await self.client.session.get(self.url_page)
 
     def form(self):
-        return {
-            "municipio": self.municipio,
-            "renavam": self.renavam.data
-        }
+        return {"municipio": self.municipio, "renavam": self.renavam.data}
+
+    def exist_multas(self, resp_text):
+        return True if "visualizar.action" in resp_text else False
+
+    def extract_paths(self, resp_text):
+        return re.findall('"(.*visualizar\.action.*?)"', resp_text)
 
     async def multa(self):
         await self.init()
         resp = await self.client.session.post(self.url_form, data=self.form())
+        # print(await resp.text())
+        resp_text = await resp.text()
+        if self.exist_multas(resp_text):
+            paths = self.extract_paths(resp_text)
+            # print(paths)
+        else:
+            print("nao existe multas para o renavam: %s " % str(renavam))
+
+        url_multa = self.base_url.format(paths[0])
+
+        resp = await self.client.session.get(url_multa)
         print(await resp.text())
+
         await self.client.close()
+
 
 if __name__ == "__main__":
     import os
+
     rn = os.getenv("RENAVAM", "0000000000")
 
     renavam = Renavam(rn)
