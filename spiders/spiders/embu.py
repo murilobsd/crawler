@@ -119,7 +119,6 @@ class SpiderEmbu:
         return multa
 
 
-
 if __name__ == "__main__":
     import os
 
