@@ -16,6 +16,7 @@ import re
 from typing import Union
 
 import aiohttp
+from lxml import html as lxhtml
 
 
 class ExceptionRenavam(Exception):
@@ -99,9 +100,24 @@ class SpiderEmbu:
         url_multa = self.base_url.format(paths[0])
 
         resp = await self.client.session.get(url_multa)
-        print(await resp.text())
-
+        resp_text = await resp.text()
         await self.client.close()
+        print(self.extract_data(resp_text))
+
+    def extract_data(self, resp_text):
+        multa = {}
+        data_lxml = lxhtml.fromstring(resp_text)
+        campos = data_lxml.xpath('//div[@class="campo"]')
+        for cam in campos:
+            eti = cam.xpath('./p[@class="label"]/text()')
+            valor = cam.xpath('./p[@class="dado"]/text()')
+            if eti and valor:
+                eti = re.sub("[\t\n\r]", "", eti[0])
+                valor = re.sub("[\t\n\r]", "", valor[0])
+                # print("{} --> {}".format(eti, valor))
+                multa[eti] = valor
+        return multa
+
 
 
 if __name__ == "__main__":
