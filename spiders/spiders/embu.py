@@ -11,6 +11,8 @@
 # WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+from typing import Union
+
 import aiohttp
 import asyncio
 
@@ -18,7 +20,7 @@ class ExceptionRenavam(Exception):
     pass
 
 class Renavam:
-    def __init__(self, renavam_number):
+    def __init__(self, renavam_number: Union[int, str]):
         if isinstance(renavam_number, int):
             renavam_sz = len(str(renavam_number))
         elif isinstance(renavam_number, str):
@@ -36,35 +38,52 @@ class Client:
         conn = aiohttp.TCPConnector(limit_per_host=30, ttl_dns_cache=300)
         self.session = aiohttp.ClientSession(connector=conn)
 
+    def timeout(self):
+        pass
+
+    def proxy(self):
+        pass
+
+    def captcha(self):
+        pass
+
     async def close(self):
         await self.session.close()
 
+
 class SpiderEmbu:
     base_url = "http://sistemas.cobrasin.com.br{}"
+    url_page = base_url.format("/multas-municipe/home.action?municipio=8");
+    url_form = base_url.format("/multas-municipe/pesquisaMultaMunicipe/pesquisar.action")
     municipio = "8"
 
-    def __init__(self, client):
+    def __init__(self, client: Client, renavam: Renavam):
         self.client = client
+        self.renavam = renavam
 
-    async def multa(self, renavam):
-        form = {
+    async def init(self):
+        await self.client.session.get(self.url_page)
+
+    def form(self):
+        return {
             "municipio": self.municipio,
-            "renavam": renavam.data
+            "renavam": self.renavam.data
         }
-        url = self.base_url.format("/multas-municipe/home.action?municipio=8")
-        url_post = self.base_url.format("/multas-municipe/pesquisaMultaMunicipe/pesquisar.action")
-        await self.client.session.get(url)
-        resp = await self.client.session.post(url_post, data=form)
-        print(resp.status)
+
+    async def multa(self):
+        await self.init()
+        resp = await self.client.session.post(self.url_form, data=self.form())
         print(await resp.text())
         await self.client.close()
 
 if __name__ == "__main__":
     import os
     rn = os.getenv("RENAVAM", "0000000000")
+
     renavam = Renavam(rn)
     client = Client()
-    spider = SpiderEmbu(client)
+    spider = SpiderEmbu(client, renavam)
+
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(spider.multa(renavam))
+    loop.run_until_complete(spider.multa())
     loop.close()
