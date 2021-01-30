@@ -1,4 +1,4 @@
-use crate::domain::Institution;
+use crate::domain::institution::Institution;
 use chrono::{DateTime, Utc};
 
 /// The identification fine
@@ -26,11 +26,11 @@ pub struct Fine {
     /// The amount of the fine.
     pub amount: Option<u32>,
     /// The post date.
-    pub posted_at: DateTime<Utc>,
+    pub posted_at: Option<DateTime<Utc>>,
 }
 
 impl Fine {
-    pub fn new(ait: u32, posted_at: DateTime<Utc>) -> Self {
+    pub fn new(ait: u32) -> Self {
         Self {
             id: None,
             ait,
@@ -41,11 +41,11 @@ impl Fine {
             uf: None,
             city: None,
             amount: None,
-            posted_at,
+            posted_at: None,
         }
     }
 
-    pub fn new_with_id(id: Option<FineId>, ait: u32, posted_at: DateTime<Utc>) -> Self {
+    pub fn new_with_id(id: Option<FineId>, ait: u32) -> Self {
         Self {
             id,
             ait,
@@ -56,7 +56,7 @@ impl Fine {
             uf: None,
             city: None,
             amount: None,
-            posted_at,
+            posted_at: None,
         }
     }
 }
