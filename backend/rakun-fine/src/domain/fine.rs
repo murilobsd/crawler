@@ -1,3 +1,4 @@
+use crate::domain::Institution;
 use chrono::{DateTime, Utc};
 
 /// The identification fine
@@ -15,7 +16,7 @@ pub struct Fine {
     /// The provider fine.
     pub institution: Option<String>,
     /// The location where the fine occurred, usually the r
-    pub location: Option<String>,
+    pub location: Option<Institution>,
     /// The code CTB.
     pub code: Option<String>,
     /// The federation unit where the fine ocurred.
