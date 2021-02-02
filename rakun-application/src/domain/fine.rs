@@ -1,6 +1,20 @@
+use std::fmt;
+
+/// FineId
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct FineId(pub String);
+
+impl fmt::Display for FineId {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
 /// Fine ...
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct Fine {
+    /// The Fine ID
+    pub id: Option<FineId>,
     /// The ait ...
     pub ait: u32,
     /// The description ...
@@ -9,12 +23,18 @@ pub struct Fine {
 
 impl Fine {
     pub fn new(ait: u32, description: Option<String>) -> Self {
-        Self { ait, description }
+        Self {
+            id: None,
+            ait,
+            description,
+        }
     }
 }
 
 /// FineBuilder ...
 pub struct FineBuilder {
+    /// The Fine ID
+    pub id: Option<FineId>,
     /// The ait ...
     pub ait: u32,
     /// The description ...
@@ -24,9 +44,15 @@ pub struct FineBuilder {
 impl FineBuilder {
     pub fn new(ait: u32) -> Self {
         Self {
+            id: None,
             ait,
             description: None,
         }
+    }
+
+    pub fn with_id(&mut self, id: FineId) -> &Self {
+        self.id = Some(id);
+        self
     }
 
     pub fn with_description(&mut self, description: String) -> &Self {
@@ -36,6 +62,7 @@ impl FineBuilder {
 
     pub fn build(&self) -> Fine {
         Fine {
+            id: None,
             ait: self.ait,
             description: self.description.clone(),
         }
