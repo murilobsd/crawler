@@ -42,6 +42,7 @@ pub struct FineBuilder {
 }
 
 impl FineBuilder {
+    /// new
     pub fn new(ait: u32) -> Self {
         Self {
             id: None,
@@ -50,16 +51,19 @@ impl FineBuilder {
         }
     }
 
+    /// with_id
     pub fn with_id(&mut self, id: FineId) -> &Self {
         self.id = Some(id);
         self
     }
 
+    /// with description
     pub fn with_description(&mut self, description: String) -> &Self {
         self.description = Some(description);
         self
     }
 
+    /// build
     pub fn build(&self) -> Fine {
         Fine {
             id: None,
