@@ -1,6 +1,15 @@
 use std::fmt;
+use thiserror::Error;
 
-/// LicenseNumber
+#[derive(Error, Debug)]
+pub enum LicenseNumberError {
+    #[error("invalid license number length: {0}")]
+    InvalidLength(u32),
+    #[error("invalid license number: {0}")]
+    Invalid(String),
+}
+
+/// This struct stores LicenseNumber data
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct LicenseNumber(pub u32);
 
@@ -10,7 +19,7 @@ impl fmt::Display for LicenseNumber {
     }
 }
 
-/// LicensePlate
+/// This struct stores LicensePlate data
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct LicensePlate(pub u32);
 
